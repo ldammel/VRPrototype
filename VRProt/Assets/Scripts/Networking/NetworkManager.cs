@@ -44,7 +44,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public void StartGame()
     {
-        view.RPC("SetMemberStatus", RpcTarget.AllBuffered);
+        view.RPC("SetMemberStatus", RpcTarget.MasterClient);
     }
 
     [PunRPC]

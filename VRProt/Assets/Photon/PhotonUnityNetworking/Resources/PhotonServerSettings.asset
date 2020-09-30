@@ -43,6 +43,7 @@ MonoBehaviour:
   - ChangeName
   - LoadAttributes
   - SetMemberStatus
+  - Load
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

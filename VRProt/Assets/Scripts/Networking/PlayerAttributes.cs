@@ -1,6 +1,10 @@
-﻿using Photon.Pun;
+﻿using System;
+using Photon.Pun;
+using Photon.Pun.Demo.Cockpit;
+using Photon.Realtime;
 using TMPro;
 using UnityEngine;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class PlayerAttributes : MonoBehaviour
 {
@@ -8,28 +12,26 @@ public class PlayerAttributes : MonoBehaviour
     [SerializeField] private MeshRenderer mRenderer;
     [SerializeField] private PhotonView photonView;
     private int colorInt;
+    public Player Player;
     public bool isImposter;
 
     private void Start()
     {
         photonView = GetComponent<PhotonView>();
-        if (photonView.IsMine) photonView.RPC("LoadAttributes", RpcTarget.AllBuffered);
+        if (photonView.IsMine) photonView.RPC("Load", RpcTarget.MasterClient);
     }
 
     public void StartGames()
     {
         var manager = FindObjectOfType<NetworkManager>();
         manager.StartGame();
-        if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Imposter", out object value))
-        {
-            isImposter = (bool)value;
-        }
     }
 
-    [PunRPC]
-    public void LoadAttributes()
+    public void SetPlayerInfo(Player player)
     {
-        colorInt = SetUpPlayer.Instance.storedColorInt;
+        Player = player;
+        player.NickName = nameField.text;
+        Debug.Log(player.NickName);
         switch (colorInt)
         {
             case 1:
@@ -45,14 +47,28 @@ public class PlayerAttributes : MonoBehaviour
                 mRenderer.material.color = Color.yellow;   
                 break;
             default:
+                Debug.Log("No Color found!");
                 break;
         }
+    }
 
-        if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Imposter", out object value))
-        {
-            isImposter = (bool)value;
-        }
+
+    [PunRPC]
+    public void Load()
+    {
+        photonView.RPC("LoadAttributes", RpcTarget.AllBuffered);
+    }
+
+    [PunRPC]
+    public void LoadAttributes()
+    {
+        
+        colorInt = SetUpPlayer.Instance.storedColorInt;
         nameField.text = SetUpPlayer.Instance.storedName;
-        Debug.Log("Setting name and color for: " + photonView.ViewID);
+        int state = colorInt;
+        string nameState = SetUpPlayer.Instance.storedName;
+        Hashtable hash = new Hashtable {{"ColorInt", state}, {"Name", nameState}};
+        PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+        SetPlayerInfo(photonView.Owner);
     }
 }
