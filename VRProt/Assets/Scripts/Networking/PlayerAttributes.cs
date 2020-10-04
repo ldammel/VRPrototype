@@ -1,38 +1,34 @@
-﻿using System;
-using Photon.Pun;
-using Photon.Pun.Demo.Cockpit;
+﻿using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-public class PlayerAttributes : MonoBehaviour
+public class PlayerAttributes : MonoBehaviourPunCallbacks , IPunObservable
 {
+    [SerializeField] private string myName;
     [SerializeField] private TextMeshProUGUI nameField;
     [SerializeField] private MeshRenderer mRenderer;
-    [SerializeField] private PhotonView photonView;
-    private int colorInt;
-    public Player Player;
+    
+    public PhotonView myPhotonView;
+    public Player player;
     public bool isImposter;
+    
+    private int colorInt;
+    private bool isDead;
 
     private void Start()
     {
-        photonView = GetComponent<PhotonView>();
-        if (photonView.IsMine) photonView.RPC("Load", RpcTarget.MasterClient);
+        myPhotonView = GetComponent<PhotonView>();
+        if (myPhotonView.IsMine) myPhotonView.RPC("LoadAttributes", RpcTarget.AllBuffered);;
     }
-
-    public void StartGames()
+    
+    public void SetPlayerInfo(Player player, int _colorInt, string _name)
     {
-        var manager = FindObjectOfType<NetworkManager>();
-        manager.StartGame();
-    }
-
-    public void SetPlayerInfo(Player player)
-    {
-        Player = player;
-        player.NickName = nameField.text;
-        Debug.Log(player.NickName);
-        switch (colorInt)
+        this.player = player;
+        player.NickName = _name;
+        nameField.text = _name;
+        switch (_colorInt)
         {
             case 1:
                 mRenderer.material.color = Color.blue;   
@@ -52,23 +48,45 @@ public class PlayerAttributes : MonoBehaviour
         }
     }
 
-
-    [PunRPC]
-    public void Load()
-    {
-        photonView.RPC("LoadAttributes", RpcTarget.AllBuffered);
-    }
-
     [PunRPC]
     public void LoadAttributes()
     {
+        Helper.SetCustomProperty(myPhotonView,"ColorInt",SetUpPlayer.Instance.storedColorInt,SetUpPlayer.Instance.storedColorInt);
+        Helper.SetCustomProperty(myPhotonView,"Name",SetUpPlayer.Instance.storedName,SetUpPlayer.Instance.storedName);
+        Helper.SetCustomProperty(myPhotonView,"IsDead",false,false);
         
-        colorInt = SetUpPlayer.Instance.storedColorInt;
-        nameField.text = SetUpPlayer.Instance.storedName;
-        int state = colorInt;
-        string nameState = SetUpPlayer.Instance.storedName;
-        Hashtable hash = new Hashtable {{"ColorInt", state}, {"Name", nameState}};
-        PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
-        SetPlayerInfo(photonView.Owner);
+        colorInt = Helper.GetCustomProperty(myPhotonView,"ColorInt",SetUpPlayer.Instance.storedColorInt,SetUpPlayer.Instance.storedColorInt);
+        myName = Helper.GetCustomProperty(myPhotonView,"Name",SetUpPlayer.Instance.storedName,SetUpPlayer.Instance.storedName);
+        
+        SetPlayerInfo(myPhotonView.Owner, colorInt, myName);
+    }
+
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+    {
+        base.OnPlayerPropertiesUpdate(targetPlayer, changedProps);
+        if (targetPlayer != null && targetPlayer == player)
+        {
+            Debug.Log(targetPlayer.NickName + " changed " + changedProps);
+            if (changedProps.ContainsKey("IsDead"))
+            {
+                isDead = changedProps.TryGetValue("IsDead",out var value);
+            }
+        }
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(this.isDead);
+            stream.SendNext(this.colorInt);
+            stream.SendNext(this.myName);
+        }
+        else
+        {
+            this.isDead = (bool) stream.ReceiveNext();
+            this.colorInt = (int) stream.ReceiveNext();
+            this.myName = (string) stream.ReceiveNext();
+        }
     }
 }
