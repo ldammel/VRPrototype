@@ -1,4 +1,5 @@
-﻿using Photon.Pun;
+﻿using System;
+using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 
@@ -9,6 +10,12 @@ public class Bullet : MonoBehaviour
         private Player owner;
         private double creationTime;
         private Vector3 startPosition;
+        private Rigidbody rb;
+
+        private void Start()
+        {
+                rb = GetComponent<Rigidbody>();
+        }
 
         public void SetOwner(Player player)
         {
@@ -28,9 +35,8 @@ public class Bullet : MonoBehaviour
         private void Update()
         {
                 float timePassed = (float) (PhotonNetwork.Time - creationTime);
-                transform.position = startPosition + timePassed * speed * transform.forward;
-                
-                if(timePassed > lifetime) Destroy(gameObject);
+                rb.velocity = speed * transform.forward;
+                Destroy(gameObject,lifetime);
         }
 
         private void OnCollisionEnter(Collision other)
@@ -40,6 +46,7 @@ public class Bullet : MonoBehaviour
                         var player = other.collider.GetComponent<GetParent>().parent.GetComponent<PhotonView>();
                         if(!Equals(player.Owner, owner)) player.RPC("UpdatePlayer", RpcTarget.All, new object[]{player});
                 }
+                Destroy(gameObject);
         }
 
         [PunRPC]

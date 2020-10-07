@@ -7,7 +7,10 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 public class PlayerAttributes : MonoBehaviourPunCallbacks , IPunObservable
 {
     [SerializeField] private string myName;
-    [SerializeField] private TextMeshProUGUI nameField;
+    [SerializeField] private TextMeshProUGUI nameFieldHead;
+    [SerializeField] private TextMeshProUGUI nameFieldHand;
+    [SerializeField] private TextMeshProUGUI colorFieldHand;
+    [SerializeField] private TextMeshProUGUI stateFieldHand;
     [SerializeField] private MeshRenderer mRenderer;
     
     public PhotonView myPhotonView;
@@ -15,7 +18,7 @@ public class PlayerAttributes : MonoBehaviourPunCallbacks , IPunObservable
     public bool isImposter;
     
     private int colorInt;
-    private bool isDead;
+    public bool isDead;
 
     private void Start()
     {
@@ -25,22 +28,28 @@ public class PlayerAttributes : MonoBehaviourPunCallbacks , IPunObservable
     
     public void SetPlayerInfo(Player player, int _colorInt, string _name)
     {
+        stateFieldHand.text = isDead ? "Dead" : "Alive";
         this.player = player;
         player.NickName = _name;
-        nameField.text = _name;
+        nameFieldHead.text = _name;
+        nameFieldHand.text = _name;
         switch (_colorInt)
         {
             case 1:
-                mRenderer.material.color = Color.blue;   
+                mRenderer.material.color = Color.blue;
+                colorFieldHand.text = "Color: Blue";
                 break;
             case 2:
                 mRenderer.material.color = Color.red;   
+                colorFieldHand.text = "Color: Red";
                 break;
             case 3:
                 mRenderer.material.color = Color.green;   
+                colorFieldHand.text = "Color: Green";
                 break;
             case 4:
                 mRenderer.material.color = Color.yellow;   
+                colorFieldHand.text = "Color: Yellow";
                 break;
             default:
                 Debug.Log("No Color found!");
@@ -51,14 +60,14 @@ public class PlayerAttributes : MonoBehaviourPunCallbacks , IPunObservable
     [PunRPC]
     public void LoadAttributes()
     {
-        Helper.SetCustomProperty(myPhotonView,"ColorInt",SetUpPlayer.Instance.storedColorInt,SetUpPlayer.Instance.storedColorInt);
-        Helper.SetCustomProperty(myPhotonView,"Name",SetUpPlayer.Instance.storedName,SetUpPlayer.Instance.storedName);
         Helper.SetCustomProperty(myPhotonView,"IsDead",false,false);
         
-        colorInt = Helper.GetCustomProperty(myPhotonView,"ColorInt",SetUpPlayer.Instance.storedColorInt,SetUpPlayer.Instance.storedColorInt);
-        myName = Helper.GetCustomProperty(myPhotonView,"Name",SetUpPlayer.Instance.storedName,SetUpPlayer.Instance.storedName);
+        myName = MasterManager.Instance.GameSettings.NickName;
+        colorInt = MasterManager.Instance.GameSettings.ColorInt;
+        isDead = MasterManager.Instance.GameSettings.IsDead;
         
         SetPlayerInfo(myPhotonView.Owner, colorInt, myName);
+        stateFieldHand.text = isDead ? "Dead" : "Alive";
     }
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
@@ -69,7 +78,8 @@ public class PlayerAttributes : MonoBehaviourPunCallbacks , IPunObservable
             Debug.Log(targetPlayer.NickName + " changed " + changedProps);
             if (changedProps.ContainsKey("IsDead"))
             {
-                isDead = changedProps.TryGetValue("IsDead",out var value);
+                isDead = Helper.GetCustomProperty(myPhotonView,"IsDead",false,false);;
+                stateFieldHand.text = isDead ? "Dead" : "Alive";
             }
         }
     }
@@ -80,13 +90,11 @@ public class PlayerAttributes : MonoBehaviourPunCallbacks , IPunObservable
         {
             stream.SendNext(this.isDead);
             stream.SendNext(this.colorInt);
-            stream.SendNext(this.myName);
         }
         else
         {
             this.isDead = (bool) stream.ReceiveNext();
             this.colorInt = (int) stream.ReceiveNext();
-            this.myName = (string) stream.ReceiveNext();
         }
     }
 }

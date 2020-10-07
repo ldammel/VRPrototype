@@ -4,7 +4,8 @@ using UnityEngine;
 public class SpeakingIcon : MonoBehaviour
 {
     public AudioSource source;
-    public GameObject image;
+    public GameObject imageHead;
+    public GameObject imageHand;
     
     private float updateStep = 0.2f;
     private int sampleDataLength = 1024;
@@ -38,13 +39,15 @@ public class SpeakingIcon : MonoBehaviour
 
             clipLoudness /= sampleDataLength;
 
-            if (clipLoudness > 0.005 && !image.activeSelf)
+            if (clipLoudness > 0.005 && !imageHead.activeSelf)
             {
-                image.SetActive(true);
+                imageHead.SetActive(true);
+                imageHand.SetActive(true);
             }
-            else if (clipLoudness < 0.005 && image.activeSelf)
+            else if (clipLoudness < 0.005 && imageHead.activeSelf)
             {
-                image.SetActive(false);
+                imageHead.SetActive(false);
+                imageHand.SetActive(false);
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
 public class SceneManager : MonoBehaviour
@@ -7,7 +8,7 @@ public class SceneManager : MonoBehaviour
     public GameObject player;
     public void LoadScene(int index)
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene(index);
+        PhotonNetwork.LoadLevel(index);
     }
 
     public void Quit(){
