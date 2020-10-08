@@ -12,7 +12,10 @@ public class SetUpPlayer : MonoBehaviour
     public int maxCharCount = 10;
 
     [SerializeField] private GameObject nameTooLongSign;
+    [SerializeField] private GameObject roomTooLongSign;
     [SerializeField] private TextMeshProUGUI nameText;
+    [SerializeField] private GameObject nameButton;
+    [SerializeField] private GameObject roomButton;
     public UnityEvent onChangeName;
     private bool nameTooLong;
     private void Awake()
@@ -52,12 +55,18 @@ public class SetUpPlayer : MonoBehaviour
         if (checkName.Length > maxCharCount)
         {
             nameTooLongSign.SetActive(true);
+            roomTooLongSign.SetActive(true);
             nameTooLong = true;
+            roomButton.SetActive(false);
+            nameButton.SetActive(false);
         }
         else
         {
             nameTooLongSign.SetActive(false);
+            roomTooLongSign.SetActive(false);
             nameTooLong = false;
+            roomButton.SetActive(true);
+            nameButton.SetActive(true);
         }
     }
 

@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
+/*
+Two Handed Grab Interaction Script used in my VR Prototype.
+Used to enable two handed interactions in VR and calculate the rotation of the grabbed object.
+Created by Lucas Dammel
+*/
 public class TwoHandGrabInteractable : XRGrabInteractable
 {
     public List<XRSimpleInteractable> secondHandGrabPoints = new List<XRSimpleInteractable>();
@@ -13,7 +18,7 @@ public class TwoHandGrabInteractable : XRGrabInteractable
     public bool snapToSecondHand = true;
     private Quaternion initialRotationOffset;
 
-    // Start is called before the first frame update
+	//Set up listeners on the grab points
     void Start()
     {
         foreach (var item in secondHandGrabPoints)
@@ -23,12 +28,7 @@ public class TwoHandGrabInteractable : XRGrabInteractable
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+	//If its grabbed with the second hand, calculate the rotation
     public override void ProcessInteractable(XRInteractionUpdateOrder.UpdatePhase updatePhase)
     {
         if (secondInteractor && selectingInteractor)
@@ -42,12 +42,13 @@ public class TwoHandGrabInteractable : XRGrabInteractable
         base.ProcessInteractable(updatePhase);
     }
 
+	//Set the rotation based on the rotation type
     private Quaternion GetTwoHandRotation()
     {
         Quaternion targetRotation;
         if (twoHandRotationType == TwoHandRotationType.None)
         {
-            targetRotation = Quaternion.LookRotation(secondInteractor.attachTransform.position - selectingInteractor.attachTransform.position); ;
+            targetRotation = Quaternion.LookRotation(secondInteractor.attachTransform.position - selectingInteractor.attachTransform.position); 
         }
         else if (twoHandRotationType == TwoHandRotationType.First)
         {
@@ -61,30 +62,25 @@ public class TwoHandGrabInteractable : XRGrabInteractable
         return targetRotation;
     }
 
-
     public void OnSecondHandGrab(XRBaseInteractor interactor)
     {
-        Debug.Log("SECOND HAND GRAB");
         secondInteractor = interactor;
         initialRotationOffset = Quaternion.Inverse(GetTwoHandRotation()) * selectingInteractor.attachTransform.rotation;
     }
 
     public void OnSecondHandRelease(XRBaseInteractor interactor)
     {
-        Debug.Log("SECOND HAND RELEASE");
         secondInteractor = null;
     }
 
     protected override void OnSelectEnter(XRBaseInteractor interactor)
     {
-        Debug.Log("First Grab Enter");
         base.OnSelectEnter(interactor);
         attachInitialRotation = interactor.attachTransform.localRotation;
     }
 
     protected override void OnSelectExit(XRBaseInteractor interactor)
     {
-        Debug.Log("First Grab Exit");
         base.OnSelectExit(interactor);
         secondInteractor = null;
         interactor.attachTransform.localRotation = attachInitialRotation;

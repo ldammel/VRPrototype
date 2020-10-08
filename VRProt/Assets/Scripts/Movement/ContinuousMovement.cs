@@ -4,27 +4,31 @@ using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
 
+/*
+Continuous Movement Script used in the VR Prototype.
+Used to enable continuous movement in VR.
+Created by Lucas Dammel
+*/
 public class ContinuousMovement : MonoBehaviour
 {
-    public float speed = 1;
-    public XRNode inputSource;
-    public float gravity = -9.81f;
-    public LayerMask groundLayer;
-    public float additionalHeight = 0.2f;
+    [SerializeField] private float speed = 1;
+    [SerializeField] private XRNode inputSource;
+    [SerializeField] private float gravity = -9.81f;
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private float additionalHeight = 0.2f;
 
     private float fallingSpeed;
     private XRRig rig;
     private Vector2 inputAxis;
     private CharacterController character;
 
-    // Start is called before the first frame update
     void Start()
     {
         character = GetComponent<CharacterController>();
         rig = GetComponent<XRRig>();
     }
-
-    // Update is called once per frame
+	
+	//Get input values
     void Update()
     {
         InputDevice device = InputDevices.GetDeviceAtXRNode(inputSource);
@@ -40,7 +44,7 @@ public class ContinuousMovement : MonoBehaviour
 
         character.Move(direction * Time.fixedDeltaTime * speed);
 
-        //gravity
+        //Gravity
         bool isGrounded = CheckIfGrounded();
         if (isGrounded)
             fallingSpeed = 0;
@@ -50,16 +54,17 @@ public class ContinuousMovement : MonoBehaviour
         character.Move(Vector3.up * fallingSpeed * Time.fixedDeltaTime);
     }
 
-    void CapsuleFollowHeadset()
+	//Get the Capsule to follow the headset movement
+    private void CapsuleFollowHeadset()
     {
         character.height = rig.cameraInRigSpaceHeight + additionalHeight;
         Vector3 capsuleCenter = transform.InverseTransformPoint(rig.cameraGameObject.transform.position);
         character.center = new Vector3(capsuleCenter.x, character.height/2 + character.skinWidth , capsuleCenter.z);
     }
 
-    bool CheckIfGrounded()
+	//Tells us if we are on ground
+    private bool CheckIfGrounded()
     {
-        //tells us if on ground
         Vector3 rayStart = transform.TransformPoint(character.center);
         float rayLength = character.center.y + 0.01f;
         bool hasHit = Physics.SphereCast(rayStart, character.radius, Vector3.down, out RaycastHit hitInfo, rayLength, groundLayer);

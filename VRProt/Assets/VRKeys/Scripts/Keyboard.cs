@@ -168,9 +168,9 @@ namespace VRKeys {
 		/// Make sure mallets don't stay attached if VRKeys is disabled without
 		/// calling Disable().
 		/// </summary>
-		private void OnDisable () {
+		/*private void OnDisable () {
 			Disable ();
-		}
+		}*/
 
 		/// <summary>
 		/// Enable the keyboard.
