@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Photon.Pun;
+﻿using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 
@@ -41,9 +39,7 @@ public class Gun : MonoBehaviour
         {
             timestamp = info.SentServerTime;
         }
-        
         CreateProjectile(position,rotation,player,timestamp);
-        
     }
 
     private void CreateProjectile(Vector3 position, Quaternion rotation, Player player, double timestamp)
@@ -56,7 +52,7 @@ public class Gun : MonoBehaviour
 
         newBullet.SetCreationTime(timestamp);
         newBullet.SetStartPosition(position);
-        newBullet.SetOwner(photonView.Owner);
+        newBullet.SetOwner(player);
 
     }
     

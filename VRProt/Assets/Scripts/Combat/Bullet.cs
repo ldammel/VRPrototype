@@ -7,14 +7,18 @@ public class Bullet : MonoBehaviour
 {
         [SerializeField] private float speed = 40;
         [SerializeField] private float lifetime = 2;
-        private Player owner;
+        public Player owner;
         private double creationTime;
         private Vector3 startPosition;
         private Rigidbody rb;
+        private Renderer rend;
+        private Collider col;
 
         private void Start()
         {
                 rb = GetComponent<Rigidbody>();
+                rend = GetComponent<Renderer>();
+                col = GetComponent<Collider>();
         }
 
         public void SetOwner(Player player)
@@ -41,17 +45,9 @@ public class Bullet : MonoBehaviour
 
         private void OnCollisionEnter(Collision other)
         {
-                if (other.collider.CompareTag("Player"))
-                {
-                        var player = other.collider.GetComponent<GetParent>().parent.GetComponent<PhotonView>();
-                        if(!Equals(player.Owner, owner)) player.RPC("UpdatePlayer", RpcTarget.All, new object[]{player});
-                }
-                Destroy(gameObject);
-        }
-
-        [PunRPC]
-        public void UpdatePlayer(PhotonView view)
-        { 
-                Helper.SetCustomProperty(view,"IsDead",true,true);
+                if (other.collider.CompareTag("Player")) return;
+                rend.enabled = false;
+                col.enabled = false;
+                Destroy(gameObject,2);
         }
 }

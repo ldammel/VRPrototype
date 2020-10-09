@@ -16,6 +16,7 @@ public class PlayerAttributes : MonoBehaviourPunCallbacks , IPunObservable
     public PhotonView myPhotonView;
     public Player player;
     public bool isImposter;
+    public bool isBot;
     
     private int colorInt;
     public bool isDead;
@@ -29,8 +30,12 @@ public class PlayerAttributes : MonoBehaviourPunCallbacks , IPunObservable
     public void SetPlayerInfo(Player player, int _colorInt, string _name)
     {
         stateFieldHand.text = isDead ? "Dead" : "Alive";
-        this.player = player;
-        player.NickName = _name;
+        if (!isBot)
+        {
+            this.player = player;
+            player.NickName = _name;
+        }
+
         nameFieldHead.text = _name;
         nameFieldHand.text = _name;
         switch (_colorInt)
@@ -62,7 +67,7 @@ public class PlayerAttributes : MonoBehaviourPunCallbacks , IPunObservable
     {
         Helper.SetCustomProperty(myPhotonView,"IsDead",false,false);
         
-        myName = MasterManager.Instance.GameSettings.NickName;
+        if(!isBot)myName = MasterManager.Instance.GameSettings.NickName;
         colorInt = MasterManager.Instance.GameSettings.ColorInt;
         isDead = MasterManager.Instance.GameSettings.IsDead;
         
