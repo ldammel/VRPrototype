@@ -39,5 +39,6 @@ public class DeveloperConsole : MonoBehaviour
     public void AddLine(string line)
     {
         textField.text += " \n " +line;
+        Debug.Log(line);
     }
 }

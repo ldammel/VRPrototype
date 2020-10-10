@@ -8,6 +8,7 @@ public class RoomListing : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI roomNameText;
     [SerializeField] private TextMeshProUGUI roomUsersText;
+    public bool roomFull;
 
     public RoomInfo RoomInfo { get; private set; }
 
@@ -16,10 +17,18 @@ public class RoomListing : MonoBehaviour
         RoomInfo = roomInfo;
         roomNameText.text = roomInfo.Name;
         roomUsersText.text = roomInfo.PlayerCount + " / " + roomInfo.MaxPlayers;
+        roomFull = roomInfo.PlayerCount < roomInfo.MaxPlayers;
     }
 
     public void OnClick_Button()
     {
-        PhotonNetwork.JoinRoom(RoomInfo.Name);
+        if (RoomInfo.PlayerCount < RoomInfo.MaxPlayers)
+        {
+            PhotonNetwork.JoinRoom(RoomInfo.Name);
+        }
+        else
+        {
+            Debug.Log("Room Full");
+        }
     }
 }

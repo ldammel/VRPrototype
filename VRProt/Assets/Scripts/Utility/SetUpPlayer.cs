@@ -20,19 +20,19 @@ public class SetUpPlayer : MonoBehaviour
     private bool nameTooLong;
     private void Awake()
     {
-        if (SetUpPlayer.Instance == null)
+        if (Instance == null)
         {
-            SetUpPlayer.Instance = this;
+            Instance = this;
         }
         else
         {
-            if (SetUpPlayer.Instance != this)
+            if (Instance != this)
             {
-                Destroy(SetUpPlayer.Instance.gameObject);
-                SetUpPlayer.Instance = this;
+                Destroy(Instance.gameObject);
+                Instance = this;
             }
         }
-        DontDestroyOnLoad(this.gameObject);
+        DontDestroyOnLoad(gameObject);
     }
 
     public void SetColor(int colorInt)

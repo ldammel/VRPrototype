@@ -1,18 +1,17 @@
-﻿using System;
-using Photon.Pun;
+﻿using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
         [SerializeField] private float speed = 40;
-        [SerializeField] private float lifetime = 2;
+        [SerializeField] private float lifetime = 3;
         public Player owner;
-        private double creationTime;
         private Vector3 startPosition;
         private Rigidbody rb;
         private Renderer rend;
         private Collider col;
+        private float curTime;
 
         private void Start()
         {
@@ -21,26 +20,13 @@ public class Bullet : MonoBehaviour
                 col = GetComponent<Collider>();
         }
 
-        public void SetOwner(Player player)
-        {
-                owner = player;
-        }
-
-        public void SetCreationTime(double time)
-        {
-                creationTime = time;
-        }
-        
-        public void SetStartPosition(Vector3 position)
-        {
-                startPosition = position;
-        }
-
         private void Update()
         {
-                float timePassed = (float) (PhotonNetwork.Time - creationTime);
                 rb.velocity = speed * transform.forward;
-                Destroy(gameObject,lifetime);
+                curTime += Time.deltaTime;
+                if (curTime < lifetime)return;
+                curTime = 0;
+                PhotonNetwork.Destroy(gameObject);
         }
 
         private void OnCollisionEnter(Collision other)
@@ -48,6 +34,7 @@ public class Bullet : MonoBehaviour
                 if (other.collider.CompareTag("Player")) return;
                 rend.enabled = false;
                 col.enabled = false;
-                Destroy(gameObject,2);
         }
+        
+        
 }

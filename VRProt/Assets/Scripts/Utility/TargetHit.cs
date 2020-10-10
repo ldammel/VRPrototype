@@ -11,29 +11,27 @@ public class TargetHit : MonoBehaviour
     [SerializeField] private GameObject spawnableObject;
     public UnityEvent onHit;
 
-    private Player player;
+    private PhotonView weapon;
     
     private void OnCollisionEnter(Collision other)
     {
         if (other.collider.CompareTag("Weapon"))
         {
-            if (other.collider.gameObject.GetComponent<Bullet>()) player = other.collider.gameObject.GetComponent<Bullet>().owner;
-            else if (other.collider.gameObject.GetComponent<PhotonView>()) player = other.collider.gameObject.GetComponent<PhotonView>().Owner;
-            Destroy(other.gameObject);
-            if (player == null)
+            weapon = other.collider.gameObject.GetComponent<PhotonView>();
+            PhotonNetwork.Destroy(other.gameObject);
+            if (weapon == null)
             {
                 DeveloperConsole.Instance.AddLine("No Shooting Player assigned!");
-                Debug.Log("No Shooting Player assigned!");
-                //return;
+                return;
             }
             DeveloperConsole.Instance.AddLine(view.gameObject.name + " got hit");
-            //if (Equals(player, view.Owner)) return;
+            if (Equals(weapon.ViewID, view.ViewID)) return;
             
             onHit.Invoke();
             PlayerAttributes attr = view.gameObject.GetComponent<PlayerAttributes>();
             attr.isDead = true;
-            view.RPC("UpdatePlayer", RpcTarget.All, new object[]{view});
-            DeveloperConsole.Instance.AddLine("Updated RPC");
+            Helper.SetCustomProperty(view,"IsDead",true,true);
+            DeveloperConsole.Instance.AddLine("Updated Status");
             
             if (!instantiate) return;
             var obj = Instantiate(spawnableObject, transform);

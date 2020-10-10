@@ -1,4 +1,5 @@
-﻿using Photon.Pun;
+﻿using System;
+using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using UnityEngine;
@@ -26,7 +27,6 @@ public class PlayerAttributes : MonoBehaviourPunCallbacks , IPunObservable
         myPhotonView = GetComponent<PhotonView>();
         if (myPhotonView.IsMine) myPhotonView.RPC("LoadAttributes", RpcTarget.AllBuffered);;
     }
-    
     public void SetPlayerInfo(Player player, int _colorInt, string _name)
     {
         stateFieldHand.text = isDead ? "Dead" : "Alive";
@@ -72,7 +72,6 @@ public class PlayerAttributes : MonoBehaviourPunCallbacks , IPunObservable
         isDead = MasterManager.Instance.GameSettings.IsDead;
         
         SetPlayerInfo(myPhotonView.Owner, colorInt, myName);
-        stateFieldHand.text = isDead ? "Dead" : "Alive";
     }
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
@@ -80,7 +79,7 @@ public class PlayerAttributes : MonoBehaviourPunCallbacks , IPunObservable
         base.OnPlayerPropertiesUpdate(targetPlayer, changedProps);
         if (targetPlayer != null && targetPlayer == player)
         {
-            Debug.Log(targetPlayer.NickName + " changed " + changedProps);
+            DeveloperConsole.Instance.AddLine(targetPlayer.NickName + " changed " + changedProps);
             if (changedProps.ContainsKey("IsDead"))
             {
                 isDead = Helper.GetCustomProperty(myPhotonView,"IsDead",false,false);;

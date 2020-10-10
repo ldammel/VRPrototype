@@ -41,11 +41,4 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         Debug.Log(newPlayer.NickName +" joined the room");
         base.OnPlayerEnteredRoom(newPlayer);
     }
-    
-    [PunRPC]
-    public void UpdatePlayer(PhotonView view)
-    {
-        DeveloperConsole.Instance.AddLine("Set " + view.gameObject.name + " status to Dead");
-        Helper.SetCustomProperty(view,"IsDead",true,true);
-    }
 }
