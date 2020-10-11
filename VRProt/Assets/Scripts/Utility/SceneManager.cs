@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
@@ -14,10 +15,10 @@ public class SceneManager : MonoBehaviour
     public void Quit(){
         Application.Quit();
     }
-
+    
     public void ReSpawnMe()
     {
-        Respawn.ReSpawn(player);
+        Respawn.Instance.ReSpawn(player);
     }
 
 }

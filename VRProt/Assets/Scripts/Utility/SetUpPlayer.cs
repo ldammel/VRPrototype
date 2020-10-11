@@ -46,7 +46,7 @@ public class SetUpPlayer : MonoBehaviour
         if (nameTooLong) return;
         storedName = newName;
         MasterManager.Instance.GameSettings.SetNickName(storedName);
-        PhotonNetwork.NickName = newName;
+        PhotonNetwork.LocalPlayer.NickName = newName;
         nameText.text = storedName;
     }
 

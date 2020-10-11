@@ -1581,6 +1581,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomName: {fileID: 2104660025}
   maxPlayers: 10
+  maxImposters: 1
 --- !u!1 &537379364
 GameObject:
   m_ObjectHideFlags: 0
@@ -9409,6 +9410,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 429d0fb432794734bb52470281447eea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainView: {fileID: 0}
+  playerCounter: {fileID: 0}
+  isImposterInitialized: 0
 --- !u!43 &1760207873
 Mesh:
   m_ObjectHideFlags: 0

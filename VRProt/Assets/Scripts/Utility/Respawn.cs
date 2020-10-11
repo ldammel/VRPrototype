@@ -1,18 +1,28 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 public class Respawn : MonoBehaviour
 {
+    public static Respawn Instance;
     public Transform reSpawnPosition;
-    public static Transform ReSpawnPosition;
+    public Transform deathSpawnPosition;
 
-    private void Start()
+    private void Awake()
     {
-        ReSpawnPosition = reSpawnPosition;
+        if (Instance != null)
+        {
+            Debug.LogError("Too many Respawn prefabs in the scene");
+        }
+        Instance = this;
     }
 
-    public static void ReSpawn(GameObject player)
+    public void ReSpawn(GameObject player)
     {
-        player.transform.position = ReSpawnPosition.position;
+        player.transform.position = reSpawnPosition.position;
+    }
+
+    public void DeathSpawn(GameObject player)
+    {
+        player.transform.position = deathSpawnPosition.position;
     }
 }

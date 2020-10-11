@@ -18,24 +18,29 @@ public class TargetHit : MonoBehaviour
         if (other.collider.CompareTag("Weapon"))
         {
             weapon = other.collider.gameObject.GetComponent<PhotonView>();
+            var attr = view.gameObject.GetComponent<PlayerAttributes>();
             PhotonNetwork.Destroy(other.gameObject);
             if (weapon == null)
             {
                 DeveloperConsole.Instance.AddLine("No Shooting Player assigned!");
                 return;
             }
-            DeveloperConsole.Instance.AddLine(view.gameObject.name + " got hit");
+            if (attr.isDead)
+            {
+                Respawn.Instance.DeathSpawn(view.gameObject);    
+                return;
+            }
+            DeveloperConsole.Instance.AddLine(attr.MyName + " got hit");
             if (Equals(weapon.ViewID, view.ViewID)) return;
-            
             onHit.Invoke();
-            PlayerAttributes attr = view.gameObject.GetComponent<PlayerAttributes>();
+            var instVector = transform;
             attr.isDead = true;
+            attr.SetPlayerInfo(attr.Player, attr.ColorInt, attr.MyName);
             Helper.SetCustomProperty(view,"IsDead",true,true);
             DeveloperConsole.Instance.AddLine("Updated Status");
             
             if (!instantiate) return;
-            var obj = Instantiate(spawnableObject, transform);
-            Destroy(obj,4);
+            PhotonNetwork.Instantiate(spawnableObject.name, instVector.position, instVector.rotation);
         }
     }
 }
