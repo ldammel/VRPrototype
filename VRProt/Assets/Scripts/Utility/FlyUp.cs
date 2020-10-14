@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class FlyUp : MonoBehaviour
+namespace Utility
 {
-    [SerializeField] private float speed;
-
-    void Update()
+    public class FlyUp : MonoBehaviour
     {
-        transform.Translate(0,speed * Time.deltaTime,0);
+        [SerializeField] private float speed;
+
+        private void Update()
+        {
+            transform.Translate(0,speed * Time.deltaTime,0);
+        }
     }
 }

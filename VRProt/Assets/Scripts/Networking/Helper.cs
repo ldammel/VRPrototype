@@ -2,45 +2,25 @@
 using Photon.Pun;
 using UnityEngine;
 
-public class Helper : MonoBehaviour
+namespace Networking
 {
-
-    public static Hashtable offlineValues;
-
-    public static T GetCustomProperty<T>(PhotonView view, string property, T offlineValue, T defaultValue)
+    public class Helper : MonoBehaviour
     {
-        if (PhotonNetwork.OfflineMode)
-        {
-            return offlineValue;
-        }
-        else
+        public static T GetCustomProperty<T>(PhotonView view, string property, T defaultValue)
         {
             if (view != null && view.Owner != null && view.Owner.CustomProperties.ContainsKey(property))
             {
                 return (T) view.Owner.CustomProperties[property];
             }
-
             return defaultValue;
         }
-    }
 
-    public static void SetCustomProperty<T>(PhotonView view, string property, T offlineValue, T defaultValue )
-    {
-        if (PhotonNetwork.OfflineMode)
+        public static void SetCustomProperty<T>(PhotonView view, string property, T defaultValue )
         {
-            if (view != null && view.Owner != null)
-            {
-                offlineValues.Add(property, offlineValue);
-            }
+            if (view == null || view.Owner == null) return;
+            Hashtable hash = new Hashtable {{property, defaultValue}};
+            view.Owner.SetCustomProperties(hash);
         }
-        else
-        {
-            if (view != null && view.Owner != null)
-            {
-                Hashtable hash = new Hashtable {{property, defaultValue}};
-                view.Owner.SetCustomProperties(hash);
-            }
-        }
-    }
 
+    }
 }

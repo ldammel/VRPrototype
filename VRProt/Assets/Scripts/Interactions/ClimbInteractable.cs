@@ -1,27 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
+﻿using UnityEngine.XR.Interaction.Toolkit;
 
-public class ClimbInteractable : XRBaseInteractable
+namespace Interactions
 {
-    protected override void OnSelectEnter(XRBaseInteractor interactor)
+    public class ClimbInteractable : XRBaseInteractable
     {
-        base.OnSelectEnter(interactor);
-
-        if(interactor is XRDirectInteractor)
-            Climber.climbingHand = interactor.GetComponent<XRController>();
-    }
-
-    protected override void OnSelectExit(XRBaseInteractor interactor)
-    {
-        base.OnSelectExit(interactor);
-        
-        if(interactor is XRDirectInteractor)
+        protected override void OnSelectEnter(XRBaseInteractor interactor)
         {
-            if(Climber.climbingHand && Climber.climbingHand.name == interactor.name)
+            base.OnSelectEnter(interactor);
+
+            if(interactor is XRDirectInteractor)
+                Climber.ClimbingHand = interactor.GetComponent<XRController>();
+        }
+
+        protected override void OnSelectExit(XRBaseInteractor interactor)
+        {
+            base.OnSelectExit(interactor);
+
+            if (!(interactor is XRDirectInteractor)) return;
+            if(Climber.ClimbingHand && Climber.ClimbingHand.name == interactor.name)
             {
-                Climber.climbingHand = null;
+                Climber.ClimbingHand = null;
             }
         }
     }

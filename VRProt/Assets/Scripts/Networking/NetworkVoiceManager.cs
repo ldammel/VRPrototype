@@ -1,41 +1,43 @@
-﻿using Photon.Pun;
-using Photon.Voice.PUN;
+﻿using Photon.Voice.PUN;
 using Photon.Voice.Unity;
 using UnityEngine;
 
-[RequireComponent(typeof(VoiceConnection))]
-public class NetworkVoiceManager : MonoBehaviour
+namespace Networking
 {
-    public Transform remoteVoiceParent;
-
-    private PhotonVoiceNetwork voiceConnection;
-    
-    void Awake()
+    [RequireComponent(typeof(VoiceConnection))]
+    public class NetworkVoiceManager : MonoBehaviour
     {
-        voiceConnection = GetComponent<PhotonVoiceNetwork>();
-    }
+        public Transform remoteVoiceParent;
 
-    private void OnEnable()
-    {
-        voiceConnection.SpeakerLinked += this.OnSpeakerCreated;
-    }
+        private PhotonVoiceNetwork voiceConnection;
 
-    private void OnDisable()
-    {
-        voiceConnection.SpeakerLinked -= this.OnSpeakerCreated;
-    }
-
-    private void OnSpeakerCreated(Speaker speaker)
-    {
-        speaker.transform.SetParent(this.remoteVoiceParent);
-        speaker.OnRemoteVoiceRemoveAction += OnRemoteVoiceRemove;
-    }
-
-    private void OnRemoteVoiceRemove(Speaker speaker)
-    {
-        if(speaker != null)
+        private void Awake()
         {
-            Destroy(speaker.gameObject);
+            voiceConnection = GetComponent<PhotonVoiceNetwork>();
+        }
+
+        private void OnEnable()
+        {
+            voiceConnection.SpeakerLinked += this.OnSpeakerCreated;
+        }
+
+        private void OnDisable()
+        {
+            voiceConnection.SpeakerLinked -= this.OnSpeakerCreated;
+        }
+
+        private void OnSpeakerCreated(Speaker speaker)
+        {
+            speaker.transform.SetParent(this.remoteVoiceParent);
+            speaker.OnRemoteVoiceRemoveAction += OnRemoteVoiceRemove;
+        }
+
+        private void OnRemoteVoiceRemove(Speaker speaker)
+        {
+            if(speaker != null)
+            {
+                Destroy(speaker.gameObject);
+            }
         }
     }
 }

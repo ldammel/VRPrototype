@@ -1,22 +1,24 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class RoomScreens : MonoBehaviour
+namespace UI
 {
-    [SerializeField] private CurrentRoomScreen currentRoom;
-    public CurrentRoomScreen CurrentRoom => currentRoom;
-
-    [SerializeField] private JoinRoomScreen joinRoomScreen;
-    public JoinRoomScreen JoinRoomScreen => joinRoomScreen;
-
-    private void Awake()
+    public class RoomScreens : MonoBehaviour
     {
-        FirstInitialize();
-    }
+        [SerializeField] private CurrentRoomScreen currentRoom;
+        public CurrentRoomScreen CurrentRoom => currentRoom;
 
-    private void FirstInitialize()
-    {
-        CurrentRoom.FirstInitialize(this);
-        JoinRoomScreen.FirstInitialize(this);
+        [SerializeField] private JoinRoomScreen joinRoomScreen;
+        public JoinRoomScreen JoinRoomScreen => joinRoomScreen;
+
+        private void Awake()
+        {
+            FirstInitialize();
+        }
+
+        private void FirstInitialize()
+        {
+            CurrentRoom.FirstInitialize(this);
+            JoinRoomScreen.FirstInitialize(this);
+        }
     }
 }

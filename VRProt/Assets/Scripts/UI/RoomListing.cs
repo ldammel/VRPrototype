@@ -1,34 +1,36 @@
-﻿using System;
-using Photon.Pun;
+﻿using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using UnityEngine;
 
-public class RoomListing : MonoBehaviour
+namespace UI
 {
-    [SerializeField] private TextMeshProUGUI roomNameText;
-    [SerializeField] private TextMeshProUGUI roomUsersText;
-    public bool roomFull;
-
-    public RoomInfo RoomInfo { get; private set; }
-
-    public void SetRoomInfo(RoomInfo roomInfo)
+    public class RoomListing : MonoBehaviour
     {
-        RoomInfo = roomInfo;
-        roomNameText.text = roomInfo.Name;
-        roomUsersText.text = roomInfo.PlayerCount + " / " + roomInfo.MaxPlayers;
-        roomFull = roomInfo.PlayerCount < roomInfo.MaxPlayers;
-    }
+        [SerializeField] private TextMeshProUGUI roomNameText;
+        [SerializeField] private TextMeshProUGUI roomUsersText;
+        public bool roomFull;
 
-    public void OnClick_Button()
-    {
-        if (RoomInfo.PlayerCount < RoomInfo.MaxPlayers)
+        public RoomInfo RoomInfo { get; private set; }
+
+        public void SetRoomInfo(RoomInfo roomInfo)
         {
-            PhotonNetwork.JoinRoom(RoomInfo.Name);
+            RoomInfo = roomInfo;
+            roomNameText.text = roomInfo.Name;
+            roomUsersText.text = roomInfo.PlayerCount + " / " + roomInfo.MaxPlayers;
+            roomFull = roomInfo.PlayerCount < roomInfo.MaxPlayers;
         }
-        else
+
+        public void OnClick_Button()
         {
-            Debug.Log("Room Full");
+            if (RoomInfo.PlayerCount < RoomInfo.MaxPlayers)
+            {
+                PhotonNetwork.JoinRoom(RoomInfo.Name);
+            }
+            else
+            {
+                Debug.Log("Room Full");
+            }
         }
     }
 }

@@ -1,44 +1,43 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
-public class DeveloperConsole : MonoBehaviour
+namespace UI.Console
 {
-    #region Singleton
-    public static DeveloperConsole Instance
+    public class DeveloperConsole : MonoBehaviour
     {
-        get
+        #region Singleton
+        public static DeveloperConsole Instance
         {
-            if (_instance!= null) return _instance;
-            _instance = FindObjectOfType<DeveloperConsole>();
-            return _instance!= null ? _instance : CreateNewInstance();
+            get
+            {
+                if (_instance!= null) return _instance;
+                _instance = FindObjectOfType<DeveloperConsole>();
+                return _instance!= null ? _instance : CreateNewInstance();
+            }
         }
-    }
-    private static DeveloperConsole _instance;
-    private static DeveloperConsole CreateNewInstance()
-    {
-        var prefab = Resources.Load<DeveloperConsole>("Prefabs/Managers/DeveloperConsole");
-        _instance = Instantiate(prefab);
-        return _instance;
-    }
+        private static DeveloperConsole _instance;
+        private static DeveloperConsole CreateNewInstance()
+        {
+            var prefab = Resources.Load<DeveloperConsole>("Prefabs/Managers/DeveloperConsole");
+            _instance = Instantiate(prefab);
+            return _instance;
+        }
 		
-    private void Awake()
-    {
-        if (Instance != this)
+        private void Awake()
         {
-            Destroy(gameObject);
+            if (Instance != this)
+            {
+                Destroy(gameObject);
+            }
         }
-    }
-    #endregion
+        #endregion
     
-    [SerializeField] private TextMeshProUGUI textField;
+        [SerializeField] private TextMeshProUGUI textField;
 
-    public void AddLine(string line)
-    {
-        textField.text += " \n " +line;
-        Debug.Log(line);
+        public void AddLine(string line)
+        {
+            textField.text += " \n " +line;
+            Debug.Log(line);
+        }
     }
 }

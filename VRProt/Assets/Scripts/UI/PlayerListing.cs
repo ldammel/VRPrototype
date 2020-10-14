@@ -2,17 +2,20 @@
 using TMPro;
 using UnityEngine;
 
-public class PlayerListing : MonoBehaviour
+namespace UI
 {
-    [SerializeField] private TextMeshProUGUI playerNameText;
-    [SerializeField] private Color isLocalColor;
-
-    public Player Player {get; private set;}
-
-    public void SetPlayerInfo(Player newPlayer)
+    public class PlayerListing : MonoBehaviour
     {
-        Player = newPlayer;
-        playerNameText.text = Player.NickName;
-        if(newPlayer.IsLocal) playerNameText.color = isLocalColor;
+        [SerializeField] private TextMeshProUGUI playerNameText;
+        [SerializeField] private Color isLocalColor;
+
+        public Player Player {get; private set;}
+
+        public void SetPlayerInfo(Player newPlayer)
+        {
+            Player = newPlayer;
+            playerNameText.text = Player.NickName;
+            if(newPlayer.IsLocal) playerNameText.color = isLocalColor;
+        }
     }
 }

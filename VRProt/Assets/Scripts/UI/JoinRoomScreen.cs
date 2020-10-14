@@ -1,15 +1,18 @@
 ﻿using UnityEngine;
 
-public class JoinRoomScreen : MonoBehaviour
+namespace UI
 {
-    [SerializeField] private CreateRoom createRoom;
-    [SerializeField] private RoomListingsMenu roomListingsMenu;
-    
-    private RoomScreens roomScreens;
-    public void FirstInitialize(RoomScreens screens)
+    public class JoinRoomScreen : MonoBehaviour
     {
-        roomScreens = screens;
-        createRoom.FirstInitialize(screens);
-        roomListingsMenu.FirstInitialize(screens);
+        [SerializeField] private CreateRoom createRoom;
+        [SerializeField] private RoomListingsMenu roomListingsMenu;
+    
+        private RoomScreens roomScreens;
+        public void FirstInitialize(RoomScreens screens)
+        {
+            roomScreens = screens;
+            createRoom.FirstInitialize(screens);
+            roomListingsMenu.FirstInitialize(screens);
+        }
     }
 }

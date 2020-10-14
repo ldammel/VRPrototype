@@ -1,19 +1,21 @@
-﻿using UnityEngine.XR.Interaction.Toolkit;
-using Photon.Pun;
+﻿using Photon.Pun;
+using UnityEngine.XR.Interaction.Toolkit;
 
-public class XRGrabNetworkInteractable : XRGrabInteractable
+namespace Networking
 {
-    private PhotonView photonView;
-
-    // Start is called before the first frame update
-    void Start()
+    public class XRGrabNetworkInteractable : XRGrabInteractable
     {
-        photonView = GetComponent<PhotonView>();
-    }
+        private PhotonView photonView;
 
-    protected override void OnSelectEnter(XRBaseInteractor interactor)
-    {
-        photonView.RequestOwnership();
-        base.OnSelectEnter(interactor);
+        private void Start()
+        {
+            photonView = GetComponent<PhotonView>();
+        }
+
+        protected override void OnSelectEnter(XRBaseInteractor interactor)
+        {
+            photonView.RequestOwnership();
+            base.OnSelectEnter(interactor);
+        }
     }
 }

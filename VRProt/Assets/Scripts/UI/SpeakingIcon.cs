@@ -1,43 +1,40 @@
-﻿using System;
+﻿using System.Linq;
 using UnityEngine;
 
-public class SpeakingIcon : MonoBehaviour
+namespace UI
 {
-    public AudioSource source;
-    public GameObject imageHead;
-    public GameObject imageHand;
-    
-    private float updateStep = 0.2f;
-    private int sampleDataLength = 1024;
-    private float currentUpdateTime = 0f;
-    private float[] clipSampleData;
-
-    private void Start()
+    public class SpeakingIcon : MonoBehaviour
     {
-        clipSampleData = new float[sampleDataLength];
-    }
+        public AudioSource source;
+        public GameObject imageHead;
+        public GameObject imageHand;
 
-    private void Update()
-    {
-        if (source == null) return;
-        currentUpdateTime += Time.deltaTime;
-        if (!(currentUpdateTime >= updateStep)) return;
-        currentUpdateTime = 0f;
-        UpdateAudioState();
-    }
+        private const float UpdateStep = 0.2f;
+        private const int SampleDataLength = 1024;
+        private float currentUpdateTime = 0f;
+        private float[] clipSampleData;
 
-    private void UpdateAudioState()
-    {
-        if (source.clip)
+        private void Start()
         {
-            source.clip.GetData(clipSampleData, source.timeSamples);
-            float clipLoudness = 0;
-            foreach (float sample in clipSampleData)
-            {
-                clipLoudness += Mathf.Abs(sample);
-            }
+            clipSampleData = new float[SampleDataLength];
+        }
 
-            clipLoudness /= sampleDataLength;
+        private void Update()
+        {
+            if (!source) return;
+            currentUpdateTime += Time.deltaTime;
+            if (!(currentUpdateTime >= UpdateStep)) return;
+            currentUpdateTime = 0f;
+            UpdateAudioState();
+        }
+
+        private void UpdateAudioState()
+        {
+            if (!source.clip) return;
+            source.clip.GetData(clipSampleData, source.timeSamples);
+            var clipLoudness = clipSampleData.Sum(Mathf.Abs);
+
+            clipLoudness /= SampleDataLength;
 
             if (clipLoudness > 0.005 && !imageHead.activeSelf)
             {

@@ -1,6 +1,10 @@
-﻿using UnityEngine;
+﻿using Managers;
+using UnityEngine;
 
-public class SingletonReference : MonoBehaviour
+namespace Utility
 {
-    [SerializeField] private MasterManager masterManager;
+    public class SingletonReference : MonoBehaviour
+    {
+        [SerializeField] private MasterManager masterManager;
+    }
 }

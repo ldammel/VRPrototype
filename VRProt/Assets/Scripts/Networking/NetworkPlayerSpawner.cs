@@ -1,23 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Photon.Pun;
 using UnityEngine;
-using Photon.Pun;
 
-public class NetworkPlayerSpawner : MonoBehaviourPunCallbacks
+namespace Networking
 {
-    [SerializeField] private Canvas canvas;
-    private GameObject spawnedPlayerPrefab;
-
-    public void Start()
+    public class NetworkPlayerSpawner : MonoBehaviourPunCallbacks
     {
-        spawnedPlayerPrefab = PhotonNetwork.Instantiate("Network Player", transform.position, transform.rotation);
-        var cam = spawnedPlayerPrefab.GetComponentInChildren<Camera>();
-        canvas.worldCamera = cam;
-    }
+        [SerializeField] private Canvas canvas;
+        private GameObject spawnedPlayerPrefab;
 
-    public override void OnLeftRoom()
-    {
-        base.OnLeftRoom();
-        PhotonNetwork.Destroy(spawnedPlayerPrefab);
+        public void Start()
+        {
+            spawnedPlayerPrefab = PhotonNetwork.Instantiate("Network Player", transform.position, transform.rotation);
+            var cam = spawnedPlayerPrefab.GetComponentInChildren<Camera>();
+            canvas.worldCamera = cam;
+        }
+
+        public override void OnLeftRoom()
+        {
+            base.OnLeftRoom();
+            PhotonNetwork.Destroy(spawnedPlayerPrefab);
+        }
     }
 }

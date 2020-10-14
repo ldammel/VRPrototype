@@ -1,29 +1,29 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class LightSaber : MonoBehaviour
+namespace Utility
 {
-    public AudioClip beamAudio;
-
-    private AudioSource audioSource;
-    private Animator animator;
-
-    // Start is called before the first frame update
-    void Start()
+    public class LightSaber : MonoBehaviour
     {
-        animator = GetComponent<Animator>();
-        audioSource = GetComponent<AudioSource>();
-    }
+        public AudioClip beamAudio;
 
-    public void TriggerBeam()
-    {
-        bool isOn = animator.GetBool("LightSaberOn");
-        if (!isOn)
-            audioSource.PlayOneShot(beamAudio);
-        else
-            audioSource.Stop();
+        private AudioSource audioSource;
+        private Animator animator;
 
-        animator.SetBool("LightSaberOn", !isOn);
+        private void Start()
+        {
+            animator = GetComponent<Animator>();
+            audioSource = GetComponent<AudioSource>();
+        }
+
+        public void TriggerBeam()
+        {
+            bool isOn = animator.GetBool("LightSaberOn");
+            if (!isOn)
+                audioSource.PlayOneShot(beamAudio);
+            else
+                audioSource.Stop();
+
+            animator.SetBool("LightSaberOn", !isOn);
+        }
     }
 }

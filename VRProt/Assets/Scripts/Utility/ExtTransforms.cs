@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
 
-public static class Transforms
+namespace Utility
 {
-  public static void DestroyChildren(this Transform t, bool destroyImmediately = false)
+  public static class ExtTransforms
   {
-    foreach (Transform child in t)
+    public static void DestroyChildren(this Transform t, bool destroyImmediately = false)
     {
-      if(destroyImmediately) Object.DestroyImmediate(child.gameObject);
-      else Object.Destroy(child.gameObject);
+      foreach (Transform child in t)
+      {
+        if(destroyImmediately) Object.DestroyImmediate(child.gameObject);
+        else Object.Destroy(child.gameObject);
+      }
     }
   }
 }

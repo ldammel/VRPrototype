@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 
-public class GetParent : MonoBehaviour
+namespace Utility
 {
-    public GameObject parent;
+    public class GetParent : MonoBehaviour
+    {
+        public GameObject parent;
+    }
 }

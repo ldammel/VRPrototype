@@ -1,41 +1,41 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Movement;
 using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
 
-public class Climber : MonoBehaviour
+namespace Interactions
 {
-    private CharacterController character;
-    public static XRController climbingHand;
-    private ContinuousMovement continuousMovement;
-
-    // Start is called before the first frame update
-    void Start()
+    public class Climber : MonoBehaviour
     {
-        character = GetComponent<CharacterController>();
-        continuousMovement = GetComponent<ContinuousMovement>();
-    }
-
-    // Update is called once per frame
-    void FixedUpdate()
-    {
-        if(climbingHand)
+        private CharacterController character;
+        public static XRController ClimbingHand;
+        private ContinuousMovement continuousMovement;
+        
+        private void Start()
         {
-            continuousMovement.enabled = false;
-            Climb();
+            character = GetComponent<CharacterController>();
+            continuousMovement = GetComponent<ContinuousMovement>();
         }
-        else
+        
+        private void FixedUpdate()
         {
-            continuousMovement.enabled = true;
+            if(ClimbingHand)
+            {
+                continuousMovement.enabled = false;
+                Climb();
+            }
+            else
+            {
+                continuousMovement.enabled = true;
+            }
         }
-    }
 
-    //Climbing Computations
-    void Climb()
-    {
-        InputDevices.GetDeviceAtXRNode(climbingHand.controllerNode).TryGetFeatureValue(CommonUsages.deviceVelocity, out Vector3 velocity);
+        //Climbing Computations
+        private void Climb()
+        {
+            InputDevices.GetDeviceAtXRNode(ClimbingHand.controllerNode).TryGetFeatureValue(CommonUsages.deviceVelocity, out Vector3 velocity);
 
-        character.Move(transform.rotation * -velocity * Time.fixedDeltaTime);
+            character.Move(transform.rotation * -velocity * Time.fixedDeltaTime);
+        }
     }
 }

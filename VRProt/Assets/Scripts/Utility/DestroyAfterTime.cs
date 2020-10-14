@@ -1,13 +1,15 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class DestroyAfterTime : MonoBehaviour
+namespace Utility
 {
-
-    [SerializeField] private float delay;
-
-    private void Start()
+    public class DestroyAfterTime : MonoBehaviour
     {
-        Destroy(this.gameObject, delay);
+
+        [SerializeField] private float delay;
+
+        private void Start()
+        {
+            Destroy(this.gameObject, delay);
+        }
     }
 }
